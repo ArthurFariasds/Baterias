@@ -1,0 +1,68 @@
+@model TrocaBateriaWebApp.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-meta">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <i class="fas fa-car-battery text-primary display-4 mb-3"></i>
+                    <h2 class="card-title fw-bold">Login</h2>
+                    <p class="text-muted">Entre na sua conta para continuar</p>
+                </div>
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserNameOrEmail" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-meta-card border-meta">
+                                <i class="fas fa-user text-muted"></i>
+                            </span>
+                            <input asp-for="UserNameOrEmail" class="form-control bg-meta-card border-meta text-light" placeholder="Digite seu usuário ou e-mail" />
+                        </div>
+                        <span asp-validation-for="UserNameOrEmail" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-meta-card border-meta">
+                                <i class="fas fa-lock text-muted"></i>
+                            </span>
+                            <input asp-for="Password" class="form-control bg-meta-card border-meta text-light" placeholder="Digite sua senha" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label text-muted"></label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i> Entrar
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4 bg-meta">
+
+                <div class="text-center">
+                    <p class="mb-2 text-muted">Não tem uma conta?</p>
+                    <a asp-action="Register" class="btn btn-outline-secondary">
+                        <i class="fas fa-user-plus me-2"></i> Criar Conta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

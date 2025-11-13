@@ -1,0 +1,105 @@
+@model TrocaBateriaWebApp.Models.Bateria
+@{
+    ViewData["Title"] = "Cadastrar Bateria";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                    <div class="form-title">
+                        <h2>Editar Bateria</h2>
+                        <p>Editar bateria presente no estoque</p>
+                    </div>
+                </div>
+                
+                <div class="form-body">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert-modern error"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Nome" class="form-label">
+                                <i class="fas fa-tag"></i>
+                                Nome da Bateria
+                            </label>
+                            <div class="input-container">
+                                <input asp-for="Nome" class="form-input" placeholder="Ex: Bateria 60Ah Moura" />
+                                <i class="fas fa-battery-full input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Nome" class="error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Tipo" class="form-label">
+                                <i class="fas fa-list"></i>
+                                Tipo de Bateria
+                            </label>
+                            <div class="select-container">
+                                <select asp-for="Tipo" class="form-select">
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="Automotiva">Automotiva</option>
+                                    <option value="Moto">Moto</option>
+                                    <option value="Caminhão">Caminhão</option>
+                                    <option value="Ônibus">Ônibus</option>
+                                    <option value="Náutica">Náutica</option>
+                                    <option value="Estacionária">Estacionária</option>
+                                    <option value="Tração">Tração</option>
+                                    <option value="Nobreak">Nobreak</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-icon"></i>
+                            </div>
+                            <span asp-validation-for="Tipo" class="error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Descricao" class="form-label">
+                                <i class="fas fa-file-alt"></i>
+                                Descrição
+                            </label>
+                            <div class="textarea-container">
+                                <textarea asp-for="Descricao" class="form-textarea" rows="4" 
+                                          placeholder="Descreva as características da bateria, especificações técnicas, etc."></textarea>
+                                <i class="fas fa-edit textarea-icon"></i>
+                            </div>
+                            <span asp-validation-for="Descricao" class="error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Quantidade" class="form-label">
+                                <i class="fas fa-boxes"></i>
+                                Quantidade em Estoque
+                            </label>
+                            <div class="input-container">
+                                <input asp-for="Quantidade" type="number" class="form-input" min="0" placeholder="0" />
+                                <i class="fas fa-inventory input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Quantidade" class="error-message"></span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                Editar Bateria
+                            </button>
+                            <a asp-controller="Empresa" asp-action="MinhasBaterias" class="btn btn-cancel">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/bateria.css" />
+
+    <partial name="_ValidationScriptsPartial" />
+}

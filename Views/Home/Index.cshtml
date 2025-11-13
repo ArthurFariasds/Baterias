@@ -1,0 +1,244 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<TrocaBateriaWebApp.Models.ApplicationUser> SignInManager
+@inject UserManager<TrocaBateriaWebApp.Models.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home";
+    var user = await UserManager.GetUserAsync(User);
+    bool isLogged = SignInManager.IsSignedIn(User);
+}
+
+<div class="hero-section py-5 mb-5">
+    <div class="container text-center py-5">
+        <h1 class="display-3 fw-bold mb-4">
+            Troca de Baterias<br>Simplificada.
+        </h1>
+        <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
+            Conectamos você às melhores empresas para troca de baterias.<br>
+            Rápido, seguro e sem complicação.
+        </p>
+
+        @if (!isLogged)
+        {
+            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-rocket me-2"></i>Começar Agora
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-sign-in-alt me-2"></i>Fazer Login
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="card border-0 mx-auto shadow-meta" style="max-width: 500px;">
+                <div class="card-body py-4">
+                    <h4 class="mb-3"><i class="fas fa-hand-wave me-2"></i>Bem-vindo de volta, @user?.NomeCompleto!</h4>
+                    <p class="text-muted mb-4">
+                        @if (user?.TipoConta == "Empresa")
+                        {
+                            <span><i class="fas fa-building me-1"></i>Gerencie seus produtos e acompanhe seus agendamentos.</span>
+                        }
+                        else
+                        {
+                            <span><i class="fas fa-user me-1"></i>Encontre empresas e gerencie seus agendamentos.</span>
+                        }
+                    </p>
+                    @if (user?.TipoConta == "Empresa")
+                    {
+                        <a asp-controller="Empresa" asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-tachometer-alt me-2"></i>Acessar Dashboard
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Usuario" asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-building me-2"></i>Ver Empresas
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body p-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4 class="fw-semibold mt-3">Encontre</h4>
+                    <p class="text-muted">Localize empresas especializadas próximas a você com poucos cliques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body p-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4 class="fw-semibold mt-3">Agende</h4>
+                    <p class="text-muted">Marque o serviço no horário mais conveniente, direto pelo site.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body p-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-car-battery"></i>
+                    </div>
+                    <h4 class="fw-semibold mt-3">Troque</h4>
+                    <p class="text-muted">Realize a troca da bateria de forma rápida, segura e garantida.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5 border-top border-meta">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h2 class="fw-bold mb-4 display-5">Por que escolher o LEMA?</h2>
+                <div class="d-flex align-items-start mb-3">
+                    <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                    <div>
+                        <h5 class="fw-semibold">Parceiros Certificados</h5>
+                        <p class="text-muted mb-0">Trabalhamos apenas com empresas verificadas e de confiança.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                    <div>
+                        <h5 class="fw-semibold">Atendimento Ágil</h5>
+                        <p class="text-muted mb-0">Processo simplificado do agendamento até a conclusão.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                    <div>
+                        <h5 class="fw-semibold">Transparência Total</h5>
+                        <p class="text-muted mb-0">Saiba tudo sobre o serviço antes de agendar.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-car-battery display-1 text-primary mb-3"></i>
+                        <h4 class="fw-semibold">Pronto para começar?</h4>
+                        <p class="text-muted mb-4">Junte-se a milhares de clientes satisfeitos.</p>
+                        @if (!isLogged)
+                        {
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Criar Conta Gratuita
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@(user?.TipoConta == "Empresa" ? "/Empresa" : "/Usuario")" class="btn btn-primary btn-lg">
+                                <i class="fas fa-arrow-right me-2"></i>Continuar para o App
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 mt-5 bg-meta-card rounded-meta">
+    <div class="container text-center">
+        <h3 class="fw-bold mb-5 display-6">Como funciona em 4 passos</h3>
+        <div class="row justify-content-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="step">
+                    <div class="mb-3">
+                        <div class="step-indicator">1</div>
+                    </div>
+                    <h5 class="fw-semibold">Cadastre-se</h5>
+                    <p class="text-muted">Crie sua conta em menos de 2 minutos</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="step">
+                    <div class="mb-3">
+                        <div class="step-indicator">2</div>
+                    </div>
+                    <h5 class="fw-semibold">Encontre</h5>
+                    <p class="text-muted">Busque empresas na sua região</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="step">
+                    <div class="mb-3">
+                        <div class="step-indicator">3</div>
+                    </div>
+                    <h5 class="fw-semibold">Agende</h5>
+                    <p class="text-muted">Escolha data e horário</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="step">
+                    <div class="mb-3">
+                        <div class="step-indicator">4</div>
+                    </div>
+                    <h5 class="fw-semibold">Troque</h5>
+                    <p class="text-muted">Realize o serviço com segurança</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container text-center">
+        <h3 class="fw-bold mb-4">Junte-se à nossa comunidade</h3>
+        <p class="text-muted mb-5 mx-auto" style="max-width: 600px;">
+            Mais de 10.000 usuários e 500 empresas já confiam no LEMA para suas necessidades de troca de baterias.
+        </p>
+        <div class="row justify-content-center">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card border-0">
+                    <div class="card-body py-4">
+                        <i class="fas fa-users text-primary display-6 mb-3"></i>
+                        <h2 class="text-primary fw-bold">10K+</h2>
+                        <p class="text-muted mb-0">Usuários</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card border-0">
+                    <div class="card-body py-4">
+                        <i class="fas fa-building text-primary display-6 mb-3"></i>
+                        <h2 class="text-primary fw-bold">500+</h2>
+                        <p class="text-muted mb-0">Empresas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card border-0">
+                    <div class="card-body py-4">
+                        <i class="fas fa-car-battery text-primary display-6 mb-3"></i>
+                        <h2 class="text-primary fw-bold">15K+</h2>
+                        <p class="text-muted mb-0">Trocas Realizadas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card border-0">
+                    <div class="card-body py-4">
+                        <i class="fas fa-star text-primary display-6 mb-3"></i>
+                        <h2 class="text-primary fw-bold">4.8</h2>
+                        <p class="text-muted mb-0">Avaliação Média</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

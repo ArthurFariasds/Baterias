@@ -1,0 +1,147 @@
+@model TrocaBateriaWebApp.Models.Agendamento
+@{
+    ViewData["Title"] = "Fazer Agendamento";
+    var empresa = ViewBag.Empresa as TrocaBateriaWebApp.Models.ApplicationUser;
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/agendamento.css" />
+}
+
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div class="form-title">
+                        <h2>Fazer Agendamento</h2>
+                        <p>Agende seu serviço de troca de bateria</p>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="company-info">
+                        <div class="company-avatar">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="company-details">
+                            <h3 class="company-name">@empresa?.NomeCompleto</h3>
+                            <div class="company-contact">
+                                <span class="contact-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    @(empresa?.Endereco ?? "Endereço não informado")
+                                </span>
+                                <span class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    @(empresa?.Telefone ?? "Telefone não informado")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Create" method="post" id="agendamentoForm">
+                        @Html.AntiForgeryToken()
+
+                        @if (TempData["ModelErrors"] != null)
+                        {
+                            <div class="alert-modern error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div>
+                                    <strong>Erros detectados no servidor:</strong>
+                                    <pre class="mb-0">@TempData["ModelErrors"]</pre>
+                                </div>
+                            </div>
+                        }
+
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="alert-modern success">
+                                <i class="fas fa-check-circle"></i>
+                                <span>@TempData["Success"]</span>
+                            </div>
+                        }
+
+                        <input type="hidden" asp-for="EmpresaId" />
+                        <div asp-validation-summary="ModelOnly" class="alert-modern error"></div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-car-battery"></i>
+                                Selecionar Bateria *
+                            </label>
+                            <div class="select-container">
+                                <select asp-for="TipoBateria" required id="bateriaSelect" class="form-select">
+                                    <option value="">Selecione uma bateria</option>
+                                    @{
+                                        var bateriasPorTipo = empresa.Baterias?
+                                        .Where(b => b.Quantidade > 0)
+                                        .GroupBy(b => b.Tipo)
+                                        .OrderBy(g => g.Key);
+                                    }
+
+                                    @if (bateriasPorTipo != null)
+                                    {
+                                        foreach (var grupo in bateriasPorTipo)
+                                        {
+                                            <optgroup label="@grupo.Key">
+                                                @foreach (var bateria in grupo.OrderBy(b => b.Nome))
+                                                {
+                                                    <option value="@bateria.Nome">
+                                                        @bateria.Nome (@bateria.Quantidade disponíveis)
+                                                    </option>
+                                                }
+                                            </optgroup>
+                                        }
+                                    }
+                                </select>
+                                <i class="fas fa-chevron-down select-icon"></i>
+                            </div>
+                            <span asp-validation-for="TipoBateria" class="error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-sticky-note"></i>
+                                Observações
+                            </label>
+                            <div class="textarea-container">
+                                <textarea asp-for="Observacoes" class="form-textarea" rows="4"
+                                          placeholder="Descreva detalhes sobre o serviço desejado, modelo do veículo, horários preferenciais, etc."></textarea>
+                                <i class="fas fa-edit textarea-icon"></i>
+                            </div>
+                            <span asp-validation-for="Observacoes" class="error-message"></span>
+                        </div>
+
+                        <div class="info-alert">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="info-content">
+                                <strong>Importante</strong>
+                                <p>Após confirmar o agendamento, a empresa será notificada e entrará em contato para confirmar data e horário do serviço.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-calendar-check me-2"></i>
+                                Confirmar Agendamento
+                            </button>
+                            <a asp-controller="Usuario" asp-action="DetalhesEmpresa" asp-route-id="@Model.EmpresaId"
+                               class="btn btn-cancel">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/agendamento.js"></script>
+}

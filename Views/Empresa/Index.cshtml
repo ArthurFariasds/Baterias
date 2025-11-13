@@ -1,0 +1,178 @@
+@model TrocaBateriaWebApp.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Dashboard Empresa";
+}
+@section Scripts {
+    <link rel="stylesheet" href="~/css/empresa.css" />
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="fw-bold">
+                <i class="fas fa-building me-2"></i>
+                Bem-vindo, @Model.NomeCompleto!
+            </h2>
+            <p class="text-muted">Gerencie suas baterias e agendamentos</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-meta">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white card-title text-uppercase mb-0 fw-semibold">Baterias Cadastradas</h6>
+                            <h2 class="mb-0 mt-2 fw-bold">@ViewBag.TotalBaterias</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-car-battery" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-meta py-3">
+                    <a asp-controller="Empresa" asp-action="MinhasBaterias" class="text-white text-decoration-none d-flex align-items-center">
+                        Ver todas <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning shadow-meta">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white card-title text-uppercase mb-0 fw-semibold">Pendentes</h6>
+                            <h2 class="mb-0 mt-2 fw-bold">@ViewBag.AgendamentosPendentes</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-clock" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-meta py-3">
+                    <a asp-controller="Empresa" asp-action="Agendamentos" asp-route-status="Pendente" class="text-white text-decoration-none d-flex align-items-center">
+                        Ver pendentes <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow-meta">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white card-title text-uppercase mb-0 fw-semibold">Em Andamento</h6>
+                            <h2 class="mb-0 mt-2 fw-bold">@ViewBag.AgendamentosEmAndamento</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-cog" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-meta py-3">
+                    <a asp-controller="Empresa" asp-action="Agendamentos" asp-route-status="EmAndamento" class="text-white text-decoration-none d-flex align-items-center">
+                        Ver em andamento <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-meta">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white card-title text-uppercase mb-0 fw-semibold">Concluídos</h6>
+                            <h2 class="mb-0 mt-2 fw-bold">@ViewBag.AgendamentosConcluidos</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-check-circle" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-meta py-3">
+                    <a asp-controller="Empresa" asp-action="Agendamentos" asp-route-status="Concluido" class="text-white text-decoration-none d-flex align-items-center">
+                        Ver concluídos <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card shadow-meta bg-meta-card border-0">
+                <div class="card-header bg-transparent border-meta py-4">
+                    <h5 class="mb-0 fw-semibold text-gradient-primary">
+                        <i class="fas fa-bolt me-2"></i> Ações Rápidas
+                    </h5>
+                    <p class="text-muted mb-0 mt-1">Gerencie seu negócio de forma eficiente</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 action-card-modern">
+                                <div class="card-body text-center p-4 position-relative overflow-hidden">
+                                    <div class="action-decoration bg-primary"></div>
+                                    <div class="action-icon-wrapper mb-3">
+                                        <div class="action-avatar bg-gradient-primary">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </div>
+                                    </div>
+                                    <h6 class="fw-semibold text-dark mb-2">Nova Bateria</h6>
+                                    <p class="text-muted small mb-3">Cadastre uma nova bateria no sistema</p>
+                                    <a asp-controller="Bateria" asp-action="Create" class="btn btn-action btn-primary w-100">
+                                        <span>Cadastrar</span>
+                                        <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 action-card-modern">
+                                <div class="card-body text-center p-4 position-relative overflow-hidden">
+                                    <div class="action-decoration bg-warning"></div>
+                                    <div class="action-icon-wrapper mb-3">
+                                        <div class="action-avatar bg-gradient-warning">
+                                            <i class="fas fa-car-battery"></i>
+                                        </div>
+                                    </div>
+                                    <h6 class="fw-semibold text-dark mb-2">Minhas Baterias</h6>
+                                    <p class="text-muted small mb-3">Gerencie todas as suas baterias</p>
+                                    <a asp-controller="Empresa" asp-action="MinhasBaterias" class="btn btn-action btn-warning w-100">
+                                        <span>Gerenciar</span>
+                                        <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 action-card-modern">
+                                <div class="card-body text-center p-4 position-relative overflow-hidden">
+                                    <div class="action-decoration bg-info"></div>
+                                    <div class="action-icon-wrapper mb-3">
+                                        <div class="action-avatar bg-gradient-info">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </div>
+                                    </div>
+                                    <h6 class="fw-semibold text-dark mb-2">Agendamentos</h6>
+                                    <p class="text-muted small mb-3">Visualize todos os agendamentos</p>
+                                    <a asp-controller="Empresa" asp-action="Agendamentos" class="btn btn-action btn-info w-100">
+                                        <span>Ver Todos</span>
+                                        <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

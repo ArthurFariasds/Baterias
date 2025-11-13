@@ -1,0 +1,138 @@
+@model IEnumerable<TrocaBateriaWebApp.Models.Bateria>
+@{
+    ViewData["Title"] = "Minhas Baterias";
+}
+@section Scripts {
+    <link rel="stylesheet" href="~/css/empresa.css" />
+}
+
+<div class="container mt-4">
+    <div class="row mb-5">
+        <div class="col">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-car-battery me-3"></i>Minhas Baterias
+                </h1>
+                <p class="page-subtitle">Gerencie seu estoque de baterias</p>
+            </div>
+        </div>
+        <div class="col-auto">
+            <a asp-controller="Bateria" asp-action="Create" class="btn btn-new-battery">
+                <i class="fas fa-plus-circle me-2"></i> Nova Bateria
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-modern success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["Success"]</span>
+            <button type="button" class="alert-close" data-bs-dismiss="alert">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="batteries-grid">
+            @foreach (var bateria in Model)
+            {
+                var statusClass = bateria.Quantidade > 0 ? "in-stock" : "out-of-stock";
+                var statusText = bateria.Quantidade > 0 ? "Em Estoque" : "Sem Estoque";
+                var statusIcon = bateria.Quantidade > 0 ? "fas fa-check-circle" : "fas fa-exclamation-circle";
+
+                <div class="battery-card @statusClass fade-in-up">
+                    <div class="battery-header">
+                        <div class="battery-avatar">
+                            <i class="fas fa-battery-full"></i>
+                        </div>
+                        <div class="battery-info">
+                            <h3 class="battery-name">@bateria.Nome</h3>
+                            <div class="battery-stats">
+                                <span class="stat">
+                                    <i class="fas fa-tag"></i>
+                                    @bateria.Tipo
+                                </span>
+                                <span class="stat">
+                                    <i class="@statusIcon"></i>
+                                    @statusText
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="battery-details">
+                        <div class="detail-item">
+                            <i class="fas fa-file-alt"></i>
+                            <div class="detail-content">
+                                <label>Descrição</label>
+                                <p class="description">@(string.IsNullOrEmpty(bateria.Descricao) ? "Sem descrição" : bateria.Descricao)</p>
+                            </div>
+                        </div>
+
+                        <div class="battery-metrics">
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <div class="metric-value">@bateria.Quantidade</div>
+                                    <div class="metric-label">Disponíveis</div>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <div class="metric-value">@bateria.DataCadastro.ToString("dd/MM/yy")</div>
+                                    <div class="metric-label">Cadastro</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="battery-actions">
+                        <a asp-controller="Bateria" asp-action="Edit" asp-route-id="@bateria.Id"
+                           class="btn btn-action btn-edit">
+                            <div class="btn-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <span>Editar</span>
+                        </a>
+                        <a asp-controller="Bateria" asp-action="Delete" asp-route-id="@bateria.Id"
+                           class="btn btn-action btn-delete">
+                            <div class="btn-icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <span>Excluir</span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state-modern">
+            <div class="empty-icon">
+                <i class="fas fa-battery-empty"></i>
+            </div>
+            <h3 class="empty-title">Nenhuma bateria cadastrada</h3>
+            <p class="empty-description">
+                Comece cadastrando suas primeiras baterias para que os clientes possam encontrá-las.
+            </p>
+            <a asp-controller="Bateria" asp-action="Create" class="btn btn-primary-large">
+                <i class="fas fa-plus-circle me-2"></i> Cadastrar Primeira Bateria
+            </a>
+        </div>
+    }
+
+    <div class="action-footer">
+        <a asp-action="Index" class="btn-new-battery">
+            <i class="fas fa-arrow-left me-2"></i> Voltar ao Dashboard
+        </a>
+    </div>
+</div>

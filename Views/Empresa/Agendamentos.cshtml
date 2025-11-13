@@ -1,0 +1,268 @@
+@model IEnumerable<TrocaBateriaWebApp.Models.Agendamento>
+@{
+    ViewData["Title"] = "Agendamentos Recebidos";
+    var filtroStatus = ViewBag.FiltroStatus as string;
+}
+@section Scripts {
+    <link rel="stylesheet" href="~/css/empresa.css" />
+}
+
+<div class="container mt-4">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-modern error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>@TempData["Error"]</span>
+            <button type="button" class="alert-close" data-bs-dismiss="alert">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-modern success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["Success"]</span>
+            <button type="button" class="alert-close" data-bs-dismiss="alert">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    }
+
+    <div class="row mb-5">
+        <div class="col">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-calendar-check me-3"></i>Agendamentos Recebidos
+                </h1>
+                <p class="page-subtitle">Gerencie os agendamentos dos seus clientes</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-tabs">
+            <a asp-action="Agendamentos" class="filter-tab @(string.IsNullOrEmpty(filtroStatus) ? "active" : "")">
+                <i class="fas fa-layer-group"></i>
+                <span>Todos</span>
+                <span class="filter-count">@ViewBag.TotalAgendamentos</span>
+            </a>
+            <a asp-action="Agendamentos" asp-route-status="Pendente" class="filter-tab @(filtroStatus == "Pendente" ? "active" : "")">
+                <i class="fas fa-clock"></i>
+                <span>Pendentes</span>
+                <span class="filter-count">@ViewBag.AgendamentosPendentes</span>
+            </a>
+            <a asp-action="Agendamentos" asp-route-status="EmAndamento" class="filter-tab @(filtroStatus == "EmAndamento" ? "active" : "")">
+                <i class="fas fa-cog"></i>
+                <span>Em Andamento</span>
+                <span class="filter-count">@ViewBag.AgendamentosEmAndamento</span>
+            </a>
+            <a asp-action="Agendamentos" asp-route-status="Concluido" class="filter-tab @(filtroStatus == "Concluido" ? "active" : "")">
+                <i class="fas fa-check-circle"></i>
+                <span>Concluídos</span>
+                <span class="filter-count">@ViewBag.AgendamentosConcluidos</span>
+            </a>
+            <a asp-action="Agendamentos" asp-route-status="Cancelado" class="filter-tab @(filtroStatus == "Cancelado" ? "active" : "")">
+                <i class="fas fa-times-circle"></i>
+                <span>Cancelados</span>
+                <span class="filter-count">@ViewBag.AgendamentosCancelados</span>
+            </a>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="appointments-grid">
+            @foreach (var agendamento in Model)
+            {
+                var statusClass = agendamento.Status switch
+                {
+                    "Pendente" => "pending",
+                    "EmAndamento" => "in-progress",
+                    "Concluido" => "completed",
+                    "Cancelado" => "cancelled",
+                    _ => "default"
+                };
+
+                var statusTexto = agendamento.Status switch
+                {
+                    "Pendente" => "Pendente",
+                    "EmAndamento" => "Em Andamento",
+                    "Concluido" => "Concluído",
+                    "Cancelado" => "Cancelado",
+                    _ => agendamento.Status
+                };
+
+                var statusIcon = agendamento.Status switch
+                {
+                    "Pendente" => "fas fa-clock",
+                    "EmAndamento" => "fas fa-cog",
+                    "Concluido" => "fas fa-check-circle",
+                    "Cancelado" => "fas fa-times-circle",
+                    _ => "fas fa-info-circle"
+                };
+
+                <div class="appointment-card @statusClass fade-in-up">
+                    <div class="appointment-header">
+                        <div class="appointment-id">
+                            <i class="fas fa-hashtag"></i>
+                            <span>#@agendamento.Id</span>
+                        </div>
+                        <div class="appointment-status">
+                            <i class="@statusIcon"></i>
+                            <span>@statusTexto</span>
+                        </div>
+                    </div>
+
+                    <div class="appointment-body">
+                        <div class="client-info">
+                            <div class="client-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="client-details">
+                                <h3 class="client-name">@agendamento.Usuario?.NomeCompleto</h3>
+                                <div class="client-contact">
+                                    <span class="contact-item">
+                                        <i class="fas fa-envelope"></i>
+                                        @agendamento.Usuario?.Email
+                                    </span>
+                                    <span class="contact-item">
+                                        <i class="fas fa-phone"></i>
+                                        @(agendamento.Usuario?.Telefone ?? "Não informado")
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="appointment-details">
+                            <div class="detail-row">
+                                <div class="detail-item">
+                                    <i class="fas fa-car-battery"></i>
+                                    <div class="detail-content">
+                                        <label>Tipo de Bateria</label>
+                                        <span class="battery-type">@agendamento.TipoBateria</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(agendamento.Observacoes))
+                            {
+                                <div class="detail-row">
+                                    <div class="detail-item full-width">
+                                        <i class="fas fa-sticky-note"></i>
+                                        <div class="detail-content">
+                                            <label>Observações</label>
+                                            <p class="observations">@agendamento.Observacoes</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="appointment-timeline">
+                                <div class="timeline-item">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <div class="timeline-content">
+                                        <label>Data do Agendamento</label>
+                                        <span>@agendamento.DataAgendamento.ToString("dd/MM/yyyy 'às' HH:mm")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="appointment-actions">
+                        @if (agendamento.Status != "Cancelado" && agendamento.Status != "Concluido")
+                        {
+                            <div class="action-buttons">
+                                @if (agendamento.Status == "Pendente")
+                                {
+                                    <form asp-action="AtualizarStatusAgendamento" method="post" class="action-form">
+                                        <input type="hidden" name="id" value="@agendamento.Id" />
+                                        <input type="hidden" name="status" value="EmAndamento" />
+                                        <button type="submit" class="btn btn-action btn-start">
+                                            <i class="fas fa-play-circle me-2"></i> Iniciar
+                                        </button>
+                                    </form>
+                                }
+                                @if (agendamento.Status == "EmAndamento")
+                                {
+                                    <form asp-action="AtualizarStatusAgendamento" method="post" class="action-form">
+                                        <input type="hidden" name="id" value="@agendamento.Id" />
+                                        <input type="hidden" name="status" value="Concluido" />
+                                        <button type="submit" class="btn btn-action btn-complete">
+                                            <i class="fas fa-check-circle me-2"></i> Concluir
+                                        </button>
+                                    </form>
+                                }
+
+                                <form asp-action="CancelarAgendamento" method="post" class="action-form"
+                                      onsubmit="return confirm('Tem certeza que deseja cancelar este agendamento?');">
+                                    <input type="hidden" name="id" value="@agendamento.Id" />
+                                    <button type="submit" class="btn btn-action btn-cancel">
+                                        <i class="fas fa-times me-2"></i> Cancelar
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="status-message">
+                                <i class="fas fa-lock"></i>
+                                <span>Agendamento @statusTexto</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state-modern">
+            <div class="empty-icon">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <h3 class="empty-title">
+                @if (!string.IsNullOrEmpty(filtroStatus))
+                {
+                    var statusTexto = filtroStatus switch
+                    {
+                        "Pendente" => "pendentes",
+                        "EmAndamento" => "em andamento",
+                        "Concluido" => "concluídos",
+                        "Cancelado" => "cancelados",
+                        _ => filtroStatus
+                    };
+                    <text>Nenhum agendamento @statusTexto</text>
+                }
+                else
+                {
+                    <text>Nenhum agendamento recebido</text>
+                }
+            </h3>
+            <p class="empty-description">
+                @if (!string.IsNullOrEmpty(filtroStatus))
+                {
+                    <text>Você não possui agendamentos com este status no momento.</text>
+                }
+                else
+                {
+                    <text>Você ainda não recebeu nenhum agendamento de clientes.</text>
+                }
+            </p>
+            @if (!string.IsNullOrEmpty(filtroStatus))
+            {
+                <a asp-action="Agendamentos" class="btn btn-primary-large">
+                    <i class="fas fa-eye me-2"></i> Ver Todos os Agendamentos
+                </a>
+            }
+        </div>
+    }
+
+    <div class="action-footer">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Voltar ao Dashboard
+        </a>
+    </div>
+</div>

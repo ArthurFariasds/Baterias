@@ -1,0 +1,101 @@
+@model TrocaBateriaWebApp.Models.Bateria
+@{
+    ViewData["Title"] = "Excluir Bateria";
+}
+@section Scripts {
+    <link rel="stylesheet" href="~/css/bateria.css" />
+}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="delete-card">
+                <div class="delete-header">
+                    <div class="delete-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="delete-title">
+                        <h2>Confirmar Exclusão</h2>
+                        <p>Ação irreversível - Confirme com cuidado</p>
+                    </div>
+                </div>
+
+                <div class="delete-body">
+                    <div class="warning-alert">
+                        <i class="fas fa-radiation"></i>
+                        <div class="warning-content">
+                            <strong>Atenção!</strong>
+                            <p>Você está prestes a excluir permanentemente esta bateria do seu estoque. Esta ação não pode ser desfeita.</p>
+                        </div>
+                    </div>
+
+                    <div class="battery-details">
+                        <h3 class="details-title">
+                            <i class="fas fa-battery-full"></i>
+                            Detalhes da Bateria
+                        </h3>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-tag"></i>
+                                    Nome
+                                </div>
+                                <div class="detail-value">@Model.Nome</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-list"></i>
+                                    Tipo
+                                </div>
+                                <div class="detail-value">
+                                    <span class="type-badge">@Model.Tipo</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-file-alt"></i>
+                                    Descrição
+                                </div>
+                                <div class="detail-value">@(string.IsNullOrEmpty(Model.Descricao) ? "Sem descrição" : Model.Descricao)</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-boxes"></i>
+                                    Quantidade
+                                </div>
+                                <div class="detail-value">
+                                    <span class="quantity-badge">@Model.Quantidade unidades</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar"></i>
+                                    Data de Cadastro
+                                </div>
+                                <div class="detail-value">@Model.DataCadastro.ToString("dd/MM/yyyy 'às' HH:mm")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post" class="delete-form">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="delete-actions">
+                            <button type="submit" class="btn btn-delete-confirm"
+                                <i class="fas fa-trash me-2"></i>
+                                Excluir Permanentemente
+                            </button>
+                            <a asp-controller="Empresa" asp-action="MinhasBaterias" class="btn btn-cancel">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

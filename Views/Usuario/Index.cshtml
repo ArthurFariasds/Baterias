@@ -1,0 +1,169 @@
+@model IEnumerable<TrocaBateriaWebApp.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Empresas Disponíveis";
+}
+@section Scripts {
+    <link rel="stylesheet" href="~/css/usuario.css" />
+}
+
+<div class="container mt-4">
+    <div class="row mb-5">
+        <div class="col">
+            <div class="text-center">
+                <h1 class="fw-bold display-5 mb-3">
+                    <i class="fas fa-building me-3"></i>Encontre Sua Empresa
+                </h1>
+                <p class="lead text-muted">Descobre empresas especializadas em troca de baterias perto de você</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-modern mb-5">
+        <div class="card-body-modern">
+            <form method="get" asp-action="Index">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-filter text-primary me-3 fs-4"></i>
+                            <div class="flex-grow-1">
+                                <label class="form-label fw-semibold mb-2">Filtrar por Tipo de Bateria</label>
+                                <select name="tipoBateria" class="form-select bg-meta-card border-meta text-light">
+                                    <option value="">Todos os tipos de bateria</option>
+                                    @foreach (var tipo in ViewBag.TiposBateria as List<string>)
+                                    {
+                                        <option value="@tipo" selected="@(ViewBag.TipoBateriaFiltro == tipo)">
+                                            @tipo
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-modern btn-modern-primary w-100 h-100">
+                            <i class="fas fa-search me-2"></i> Aplicar Filtro
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    @if (Model.Any())
+    {
+        <div class="grid-modern">
+            @foreach (var empresa in Model)
+            {
+                var bateriasDisponiveis = empresa.Baterias?.Count(b => b.Quantidade > 0) ?? 0;
+                var tiposDisponiveis = empresa.Baterias?.Where(b => b.Quantidade > 0).Select(b => b.Tipo).Distinct().ToList() ?? new List<string>();
+
+                <div class="grid-item fade-in-up">
+                    <div class="company-card">
+                        <div class="company-header">
+                            <div class="company-avatar">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="company-info">
+                                <h3 class="company-name">@empresa.NomeCompleto</h3>
+                                <div class="company-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-battery-full"></i>
+                                        @bateriasDisponiveis tipos
+                                    </span>
+                                    <span class="stat">
+                                        <i class="fas fa-check-circle"></i>
+                                        Disponível
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="company-details">
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>@(empresa.Endereco ?? "Endereço não informado")</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone"></i>
+                                <span>@(empresa.Telefone ?? "Telefone não informado")</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>@empresa.Email</span>
+                            </div>
+                        </div>
+
+                        @if (tiposDisponiveis.Any())
+                        {
+                            <div class="company-tags">
+                                <label class="tags-label">Especialidades:</label>
+                                <div class="tags-container">
+                                    @foreach (var tipo in tiposDisponiveis.Take(4))
+                                    {
+                                        <span class="tag">@tipo</span>
+                                    }
+                                    @if (tiposDisponiveis.Count > 4)
+                                    {
+                                        <span class="tag-more">+@(tiposDisponiveis.Count - 4)</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <div class="company-actions">
+                            <a asp-action="DetalhesEmpresa" asp-route-id="@empresa.Id"
+                               class="btn btn-details">
+                                <i class="fas fa-eye me-2"></i>Ver Detalhes
+                            </a>
+                            <a asp-controller="Agendamento" asp-action="Create" asp-route-empresaId="@empresa.Id"
+                               class="btn btn-primary">
+                                <i class="fas fa-calendar-plus me-2"></i>Agendar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state-modern">
+            <div class="empty-icon">
+                <i class="fas fa-building"></i>
+            </div>
+            <h3 class="empty-title">
+                @if (!string.IsNullOrEmpty(ViewBag.TipoBateriaFiltro as string))
+                {
+                    <text>Nenhuma empresa encontrada</text>
+                }
+                else
+                {
+                    <text>Nenhuma empresa disponível</text>
+                }
+            </h3>
+            <p class="empty-description">
+                @if (!string.IsNullOrEmpty(ViewBag.TipoBateriaFiltro as string))
+                {
+                    <text>Não encontramos empresas com o tipo de bateria selecionado.</text>
+                }
+                else
+                {
+                    <text>No momento não há empresas cadastradas no sistema.</text>
+                }
+            </p>
+            @if (!string.IsNullOrEmpty(ViewBag.TipoBateriaFiltro as string))
+            {
+                <a asp-action="Index" class="btn btn-modern btn-modern-primary">
+                    <i class="fas fa-eye me-2"></i> Ver Todas as Empresas
+                </a>
+            }
+        </div>
+    }
+
+    <div class="action-footer">
+        <a asp-action="MeusAgendamentos" class="btn btn-new-appointment">
+            <i class="fas fa-calendar-check me-2"></i> Ver Meus Agendamentos
+        </a>
+    </div>
+</div>
